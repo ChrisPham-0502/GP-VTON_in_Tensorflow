@@ -8,6 +8,10 @@ import numpy as np
 from correlation import correlation
 from backup import grid_sample, interpolate
 
+from options.train_options import TrainOptions
+
+opt = TrainOptions().parse()
+
 def apply_offset(offset):
     sizes = offset.shape[2:]
     grid_list = tf.meshgrid(*[tf.range(size, dtype=tf.float32) for size in sizes])
@@ -203,108 +207,87 @@ class AFlowNet_Vitonhd_lrarms(tf.Module):
 
         for i in range(num_pyramid):
             netLeftMain_layer = Sequential(
-                Conv2D(in_channels=49, filters=128,
+                Conv2D(input_shape=(None, None, 49), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=128, filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=2,
-                                kernel_size=3, stride=1, padding=1)
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=2, kernel_size=3, stride=1, padding=1)
             )
             netTorsoMain_layer = Sequential(
-                Conv2D(in_channels=49, filters=128,
+                Conv2D(input_shape=(None, None, 49), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=128, filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=2,
-                                kernel_size=3, stride=1, padding=1)
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=2, kernel_size=3, stride=1, padding=1)
             )
             netRightMain_layer = Sequential(
-                Conv2D(in_channels=49, filters=128,
+                Conv2D(input_shape=(None, None, 49), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=128, filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=2,
-                                kernel_size=3, stride=1, padding=1)
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=2, kernel_size=3, stride=1, padding=1)
             )
 
             netRefine_left_layer = Sequential(
-                Conv2D(2 * fpn_dim, filters=128,
+                Conv2D(input_shape=(None, None, 2 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=128, filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=2,
-                                kernel_size=3, stride=1, padding=1)
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=2, kernel_size=3, stride=1, padding=1)
             )
             netRefine_torso_layer = Sequential(
-                Conv2D(2 * fpn_dim, filters=128,
+                Conv2D(input_shape=(None, None, 2 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=128, filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=2,
-                                kernel_size=3, stride=1, padding=1)
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=2, kernel_size=3, stride=1, padding=1)
             )
             netRefine_right_layer = Sequential(
                 Conv2D(input_shape=(None, None, 2 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=128, filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=2,
-                                kernel_size=3, stride=1, padding=1)
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=2, kernel_size=3, stride=1, padding=1)
             )
 
             netAttentionRefine_layer = Sequential(
                 Conv2D(input_shape=(None, None, 4 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(filters=64,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=64, filters=32,
-                                kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
-                Conv2D(in_channels=32, filters=3,
-                                kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
+                LeakyReLU(alpha=0.1),
+                Conv2D(filters=3, kernel_size=3, stride=1, padding=1),
                 tf.tanh()
             )
 
             netSeg_layer = Sequential(
                 Conv2D(input_shape=(None, None, fpn_dim*2), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(filters=64, kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(filters=32, kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(filters=7, kernel_size=3, stride=1, padding=1),
                 tf.tanh()
             )
@@ -327,7 +310,7 @@ class AFlowNet_Vitonhd_lrarms(tf.Module):
             self.netSeg.append(netSeg_layer)
 
         # NOTICE
-        '''
+        
         self.netLeftMain = Sequential(self.netLeftMain)
         self.netTorsoMain = Sequential(self.netTorsoMain)
         self.netRightMain = Sequential(self.netRightMain)
@@ -339,7 +322,8 @@ class AFlowNet_Vitonhd_lrarms(tf.Module):
         self.netAttentionRefine = Sequential(self.netAttentionRefine)
         self.netPartFusion = Sequential(self.netPartFusion)
         self.netSeg = Sequential(self.netSeg)
-        '''
+        # NOTICE
+        
         self.softmax = Softmax(dim=1)
 
 
@@ -392,7 +376,7 @@ class AFlowNet_Vitonhd_lrarms(tf.Module):
                 tenFirst=x_warp_after, tenSecond=x_cond_concate, intStride=1), alpha=0.1)
             '''
             tenCorrelation = LeakyReLU(input=correlation.FunctionCorrelation(
-                                tenFirst=x_warp_after, tenSecond=x_cond_concate, intStride=1), negative_slope=0.1, inplace=False)
+                                tenFirst=x_warp_after, tenSecond=x_cond_concate, intStride=1), alpha=0.1, inplace=False)
             '''
             
             bz = x_cond.size(0)
@@ -538,8 +522,8 @@ class ResBlock_SPADE(tf.Module):
         self.norm_0 = SPADE(in_channels,1)
         self.norm_1 = SPADE(in_channels,1)
 
-        self.actvn_0 = LeakyReLU(inplace=False, negative_slope=0.1)
-        self.actvn_1 = LeakyReLU(inplace=False, negative_slope=0.1)
+        self.actvn_0 = LeakyReLU(inplace=False, alpha=0.1)
+        self.actvn_1 = LeakyReLU(inplace=False, alpha=0.1)
 
         self.conv_0 = Conv2D(in_channels,in_channels,kernel_size=3, padding=1)
         self.conv_1 = Conv2D(in_channels,in_channels,kernel_size=3, padding=1)
@@ -600,15 +584,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, 49), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=2,
                                 kernel_size=3, stride=1, padding=1)
             ])
@@ -616,15 +600,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, 49), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=2,
                                 kernel_size=3, stride=1, padding=1)
             ])
@@ -632,15 +616,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, 49), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=2,
                                 kernel_size=3, stride=1, padding=1)
             ])
@@ -649,15 +633,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, 2 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=2,
                                 kernel_size=3, stride=1, padding=1)
             ])
@@ -665,15 +649,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, 2 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=2,
                                 kernel_size=3, stride=1, padding=1)
             ])
@@ -681,15 +665,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, 2 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=2,
                                 kernel_size=3, stride=1, padding=1)
             ])
@@ -697,13 +681,13 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
             netAttentionRefine_layer = Sequential(
                 Conv2D(input_shape=(None, None, 4 * fpn_dim), filters=128,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=3,
                                 kernel_size=3, stride=1, padding=1),
                 tf.tanh()
@@ -713,15 +697,15 @@ class AFlowNet_Dresscode_lrarms(tf.Module):
                 Conv2D(input_shape=(None, None, fpn_dim*2), filters=128,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(128,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=128, filters=64,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(64,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=64, filters=32,
                                 kernel_size=3, stride=1, padding=1),
                 SPADE(32,1),
-                LeakyReLU(inplace=False, negative_slope=0.1),
+                LeakyReLU(inplace=False, alpha=0.1),
                 Conv2D(in_channels=32, filters=10,
                                 kernel_size=3, stride=1, padding=1),
                 tf.tanh()
